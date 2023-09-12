@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
+import configuration from "../../shared/config/configuration";
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ email });
 
     return {
-      expiresIn: `${process.env.EXIPIRESIN}`,
+      expiresIn: configuration().expiresIn,
       accessToken,
     };
   }
@@ -41,6 +42,7 @@ export class AuthService {
   }
 
   async validateUser(payload: any) {
+    console.log('payload', payload);
     const user = await this.userService.findByEmail(payload.email);
 
     if (!user)
