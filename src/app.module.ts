@@ -1,20 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StudentSchema } from './student/student.schema';
 import { StudentService } from './student/student.service';
 import { StudentController } from './student/student.controller';
-import { StudentModule } from './student/student.module';
+import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './shared/config/configuration';
 
 @Module({
   imports: [
-    UserModule,
-    MongooseModule.forRoot('mongodb://localhost:27017', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/', {
       dbName: 'nest_userdb',
     }),
-    MongooseModule.forFeature([{name: 'Student', schema: StudentSchema}])
+    MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }]),
+    UserModule,
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
   ],
   controllers: [AppController, StudentController],
   providers: [AppService, StudentService],
